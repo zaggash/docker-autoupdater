@@ -1,0 +1,19 @@
+#!/bin/bash
+
+## original docker build command
+echo "overwriting docker build -f ${DOCKERFILE_PATH} -t ${IMAGE_NAME} ."
+
+#### Building master from dockupdater Github repo
+IMAGE_TAG="${DOCKER_REPO}:latest"
+
+echo "docker build -f ${DOCKERFILE_PATH} --build-arg DOCKUPDATER_RELEASE=master -t ${IMAGE_TAG} ."
+docker build -f ${DOCKERFILE_PATH} --build-arg DOCKUPDATER_RELEASE=master -t ${IMAGE_TAG} .
+
+#### Building latest released TAG from dockupdater Github repo
+LATEST_TAG=$(curl -sX GET "https://api.github.com/repos/dockupdater/dockupdater/releases/latest" \
+  | awk '/tag_name/{print $4;exit}' FS='[""]')
+IMAGE_TAG="${DOCKER_REPO}:${LATEST_TAG}"
+
+echo "docker build -f ${DOCKERFILE_PATH} --build-arg DOCKUPDATER_RELEASE=${LATEST_TAG} -t ${IMAGE_TAG} ."
+docker build -f ${DOCKERFILE_PATH} --build-arg DOCKUPDATER_RELEASE=${LATEST_TAG} -t ${IMAGE_TAG} .
+docker tag ${IMAGE_TAG} ${DOCKER_REPO}:latest-tag

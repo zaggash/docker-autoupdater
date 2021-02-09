@@ -34,6 +34,7 @@ RUN \
   echo "**** install pip packages ****" && \
   python3 -m ensurepip && \
   rm -rf /usr/lib/python*/ensurepip && \
+  pip3 install --upgrade  pip && \
   cd /app/dockupdater && \
   pip3 install --no-cache-dir -r requirements.txt && \
   pip3 install --no-cache-dir . && \

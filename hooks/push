@@ -1,0 +1,15 @@
+#!/bin/bash
+
+## Pushing master from dockupdater Github repo
+echo "docker push ${DOCKER_REPO}:latest"
+docker push ${DOCKER_REPO}:latest
+
+#### Pushing latest released TAG from dockupdater Github repo
+LATEST_TAG=$(curl -sX GET "https://api.github.com/repos/dockupdater/dockupdater/releases/latest" \
+  | awk '/tag_name/{print $4;exit}' FS='[""]')
+
+echo "docker push ${DOCKER_REPO}:${LATEST_TAG}"
+docker push ${DOCKER_REPO}:${LATEST_TAG}
+
+echo "docker push ${DOCKER_REPO}:latest-tag"
+docker push ${DOCKER_REPO}:latest-tag
