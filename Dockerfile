@@ -1,4 +1,4 @@
-FROM lsiobase/alpine:3.12
+FROM lsiobase/alpine:3.13
 
 # Set args & labels
 ARG DOCKUPDATER_RELEASE
@@ -6,8 +6,14 @@ LABEL maintainer="Alexandre P."
 
 RUN \
   echo "**** install packages ****" && \
+  export CRYPTOGRAPHY_DONT_BUILD_RUST=1 && \
   apk add --no-cache --upgrade --virtual=build-dependencies \
-      curl && \
+      curl \
+      musl-dev \
+      python3-dev \
+      libffi-dev \
+      openssl-dev \
+      gcc && \
   apk add --no-cache --upgrade \
       tzdata \
       python3 && \
@@ -40,6 +46,7 @@ RUN \
   pip3 install --no-cache-dir . && \
 
   echo "**** cleanup ****" && \
+  unset CRYPTOGRAPHY_DONT_BUILD_RUST && \
   apk del --purge \
 	    build-dependencies && \
   rm -rf \
